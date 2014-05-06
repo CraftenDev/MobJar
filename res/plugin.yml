@@ -1,0 +1,34 @@
+name: JarOfMob
+main: de.maiksite.bukkit.JarOfMob.JarOfMobPlugin
+version: 1.0.0
+softdepend: [Vault]
+commands:
+   jar:
+      description: Gives an empty jar.
+      usage: Use /jar to get an empty jar.
+      permission: mobjar.jar
+      permission-message: You may not do that.
+permissions:
+   mobjar.*:
+      default: op
+      description: Gives all jar permissions
+      children:
+         mobjar.jar: true
+         mobjar.use: true
+         mobjar.takemounted: true
+         mobjar.steal: true
+   mobjar.jar:
+      default: op
+      description: Allows getting jars using /jar.
+   mobjar.use:
+      default: true
+      description: Allows putting mobs into jars.
+   mobjar.takemounted:
+      default: op
+      description: Allows putting mobs into jars that other players ride.
+   mobjar.steal:
+      default: op
+      description: Allows putting mobs into jars that are tamed by other players.
+   mobjar.free:
+      default: false
+      description: Players with this permission get jars for free.
