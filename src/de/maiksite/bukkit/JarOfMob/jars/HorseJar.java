@@ -1,7 +1,8 @@
 package de.maiksite.bukkit.JarOfMob.jars;
 
 import de.maiksite.bukkit.JarOfMob.JarOfMobPlugin;
-import de.maiksite.bukkit.JarOfMob.serialization.HorseSerializer;
+import de.maiksite.bukkit.JarOfMob.persistence.JarException;
+import de.maiksite.bukkit.JarOfMob.persistence.serialization.HorseSerializer;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -30,7 +31,6 @@ public class HorseJar extends Jar {
     public HorseJar(long id, Horse originalHorse) {
         super(id);
         horseData = HorseSerializer.serialize(originalHorse);
-        originalHorse.remove();
     }
 
     @Override
@@ -63,22 +63,32 @@ public class HorseJar extends Jar {
 
     @Override
     public void onOpenJar(PlayerInteractEvent event) {
+        event.setCancelled(true);
         Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
+
         if (canRestoreTo(restoreLoc)) {
             Horse horse = (Horse) restoreTo(restoreLoc);
             horse.setOwner(event.getPlayer());
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            JarOfMobPlugin.JARS.remove(getUniqueId());
+            try {
+                JarOfMobPlugin.getJars().removeJar(getUniqueId());
+            } catch (JarException e) {
+                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
+                return;
+            }
             event.getPlayer().getInventory().removeItem(event.getItem());
 
             Jar emptyJar = new EmptyJar(getUniqueId());
+            try {
+                JarOfMobPlugin.getJars().addJar(emptyJar);
+            } catch (JarException e) {
+                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
+            }
             event.getPlayer().getInventory().addItem(emptyJar.getItem());
-            JarOfMobPlugin.JARS.put(getUniqueId(), emptyJar);
         } else {
             event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Not enough space to open the jar.");
         }
-        event.setCancelled(true);
     }
 
     @Override
@@ -88,20 +98,32 @@ public class HorseJar extends Jar {
 
     @Override
     public void onDrinkJar(PlayerItemConsumeEvent event) {
+        event.setCancelled(true);
+
         if (event.getPlayer().getVehicle() == null) {
+            try {
+                JarOfMobPlugin.getJars().removeJar(getUniqueId());
+            } catch (JarException e) {
+                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
+                return;
+            }
+            Jar emptyJar = new EmptyJar(getUniqueId());
+            try {
+                JarOfMobPlugin.getJars().addJar(emptyJar);
+            } catch (JarException e) {
+                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
+                return;
+            }
+
             Location restoreLoc = event.getPlayer().getLocation();
+            restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
+
             Horse horse = (Horse) restoreTo(restoreLoc);
             horse.setPassenger(event.getPlayer());
             horse.setOwner(event.getPlayer());
-            restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            JarOfMobPlugin.JARS.remove(getUniqueId());
             event.getPlayer().getInventory().removeItem(event.getItem());
-
-            Jar emptyJar = new EmptyJar(getUniqueId());
             event.getPlayer().getInventory().addItem(emptyJar.getItem());
-            JarOfMobPlugin.JARS.put(getUniqueId(), emptyJar);
         }
-        event.setCancelled(true);
     }
 }

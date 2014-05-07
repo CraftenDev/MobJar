@@ -1,20 +1,21 @@
 package de.maiksite.bukkit.JarOfMob;
 
 import de.maiksite.bukkit.JarOfMob.jars.Jar;
-import org.bukkit.Bukkit;
+import de.maiksite.bukkit.JarOfMob.persistence.JarException;
+import de.maiksite.bukkit.JarOfMob.persistence.JarPersistence;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class JarListener implements Listener {
     @EventHandler
     private void playerDropItem(PlayerDropItemEvent event) {
-        Jar droppedJar = Jar.getJar(event.getItemDrop().getItemStack());
+        Jar droppedJar = jarFromItem(event.getItemDrop().getItemStack());
         if (droppedJar != null) {
             droppedJar.onDrop(event);
         }
@@ -29,7 +30,7 @@ public class JarListener implements Listener {
         event.setCancelled(false);
 
         Action action = event.getAction();
-        Jar droppedJar = Jar.getJar(event.getItem());
+        Jar droppedJar = jarFromItem(event.getItem());
         if (droppedJar != null) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                 droppedJar.onOpenJar(event);
@@ -42,7 +43,7 @@ public class JarListener implements Listener {
         if (event.isCancelled())
             return;
 
-        Jar jar = Jar.getJar(event.getPlayer().getItemInHand());
+        Jar jar = jarFromItem(event.getPlayer().getItemInHand());
         if (jar != null) {
             jar.onRightClickEntity(event);
         }
@@ -50,18 +51,18 @@ public class JarListener implements Listener {
 
     @EventHandler
     private void stopConsuming(PlayerItemConsumeEvent event) {
-        Jar jar = Jar.getJar(event.getPlayer().getItemInHand());
+        Jar jar = jarFromItem(event.getPlayer().getItemInHand());
         if (jar != null) {
             jar.onDrinkJar(event);
         }
     }
 
-    @EventHandler
-    private void destroyJar(ItemDespawnEvent event) {
-        Jar jar = Jar.getJar(event.getEntity().getItemStack());
-        if (jar != null) {
-            JarOfMobPlugin.JARS.remove(jar.getUniqueId());
-            Bukkit.getLogger().info("Jar deleted.");
+    private Jar jarFromItem(ItemStack item) {
+        try {
+            return JarOfMobPlugin.getJars().getJar(Jar.getIdFromItemStack(item));
+        } catch (JarException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -1,6 +1,6 @@
 package de.maiksite.bukkit.JarOfMob.jars;
 
-import de.maiksite.bukkit.JarOfMob.JarOfMobPlugin;
+import de.maiksite.bukkit.JarOfMob.persistence.JarException;
 import de.maiksite.bukkit.JarOfMob.util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,19 +47,16 @@ public abstract class Jar implements Serializable {
     }
 
     /**
-     * Gets the jar that is represented by the given item. If the item is not a jar, null is returned.
+     * Gets the ID of the jar that is represented by the given item. If the item is not a jar, null is returned.
      *
      * @param itemStack Item that represents a jar
      * @return Jar that is represented by the given item, null if the item is not a jar
      */
-    public static Jar getJar(ItemStack itemStack) {
+    public static Long getIdFromItemStack(ItemStack itemStack) {
         if (itemStack == null || itemStack.getItemMeta() == null)
             return null;
 
-        Long id = getIdFromLore(itemStack.getItemMeta().getLore());
-        if (id != null)
-            return JarOfMobPlugin.JARS.get(id);
-        return null;
+        return getIdFromLore(itemStack.getItemMeta().getLore());
     }
 
     /**
@@ -70,14 +67,6 @@ public abstract class Jar implements Serializable {
      */
     public static boolean isJar(ItemStack item) {
         return getIdFromLore(item.getItemMeta().getLore()) != null;
-    }
-
-    public static Jar load(File file) throws IOException, ClassNotFoundException {
-        FileInputStream fin = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fin);
-        Jar jar = (Jar) ois.readObject();
-        ois.close();
-        return jar;
     }
 
     /**
@@ -145,11 +134,4 @@ public abstract class Jar implements Serializable {
     }
 
     public abstract void onDrinkJar(PlayerItemConsumeEvent event);
-
-    public void save(File file) throws IOException {
-        FileOutputStream fout = new FileOutputStream(file);
-        ObjectOutputStream oos = new ObjectOutputStream(fout);
-        oos.writeObject(this);
-        oos.close();
-    }
 }

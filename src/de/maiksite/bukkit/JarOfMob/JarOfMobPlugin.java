@@ -2,6 +2,9 @@ package de.maiksite.bukkit.JarOfMob;
 
 import de.maiksite.bukkit.JarOfMob.jars.EmptyJar;
 import de.maiksite.bukkit.JarOfMob.jars.Jar;
+import de.maiksite.bukkit.JarOfMob.persistence.JarException;
+import de.maiksite.bukkit.JarOfMob.persistence.JarFileManager;
+import de.maiksite.bukkit.JarOfMob.persistence.JarPersistence;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -13,36 +16,34 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JarOfMobPlugin extends JavaPlugin {
     public static final String PREFIX = ChatColor.GOLD + "[MobJar] " + ChatColor.RESET;
-    public static final HashMap<Long, Jar> JARS = new HashMap<Long, Jar>();
+    private static JarPersistence jars;
     private Economy economy;
+
+    public static JarPersistence getJars() {
+        return jars;
+    }
 
     @Override
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(new JarListener(), this);
-        getDataFolder().mkdirs();
-        for (File file : getDataFolder().listFiles()) {
-            try {
-                Jar jar = Jar.load(file);
-                JARS.put(jar.getUniqueId(), jar);
-            } catch (Exception e) {
-                getLogger().warning("Could not deserialize \"" + file.getName() + "\".");
-            }
-
-        }
+        File jarDir = new File(getDataFolder(), "jars");
+        if (!jarDir.exists())
+            jarDir.mkdirs();
+        jars = new JarFileManager(jarDir);
 
         if (!setupEconomy() && getConfig().getDouble("jarprice") != 0)
-            getLogger().info("No economy plugin found (or missing Vault), jars will be free!");
+            getLogger().warning("No economy plugin found (or missing Vault), jars will be free!");
+
+        Bukkit.getPluginManager().registerEvents(new JarListener(), this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equals("jar") && sender instanceof Player) {
+            boolean didPay = false;
+
             if (economy != null && getConfig().getDouble("jarprice") > 0 && !sender.hasPermission("mobjar.free")) {
                 sender.sendMessage(PREFIX + String.format("That's %s, please!", economy.format(getConfig().getDouble("jarprice"))));
 
@@ -50,28 +51,30 @@ public class JarOfMobPlugin extends JavaPlugin {
                 if (!payment.transactionSuccess()) {
                     sender.sendMessage(PREFIX + "You don't have enough money.");
                     return true;
+                } else {
+                    didPay = true;
                 }
             }
+
             Player player = (Player) sender;
             Jar emptyJar = new EmptyJar(System.currentTimeMillis());
-            player.getInventory().addItem(emptyJar.getItem());
-            JARS.put(emptyJar.getUniqueId(), emptyJar);
+            try {
+                jars.addJar(emptyJar);
+                player.getInventory().addItem(emptyJar.getItem());
+            } catch (JarException e) {
+                getLogger().warning("Could not save a jar!");
+                if (didPay) {
+                    economy.depositPlayer(sender.getName(), getConfig().getDouble("jarprice"));
+                    player.sendMessage(PREFIX + "Sorry, could not create a jar, the payment was reversed.");
+                } else {
+                    player.sendMessage(PREFIX + "Sorry, could not create a jar.");
+                }
+            }
 
             return true;
         }
 
         return false;
-    }
-
-    @Override
-    public void onDisable() {
-        for (Map.Entry<Long, Jar> jar : JARS.entrySet()) {
-            try {
-                jar.getValue().save(new File(getDataFolder(), jar.getValue().getUniqueId() + ".dat"));
-            } catch (IOException e) {
-                getLogger().warning("Could not serialize jar #" + jar.getValue().getUniqueId());
-            }
-        }
     }
 
     private boolean setupEconomy() {

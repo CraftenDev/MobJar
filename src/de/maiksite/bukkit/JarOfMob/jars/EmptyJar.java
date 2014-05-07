@@ -1,6 +1,7 @@
 package de.maiksite.bukkit.JarOfMob.jars;
 
 import de.maiksite.bukkit.JarOfMob.JarOfMobPlugin;
+import de.maiksite.bukkit.JarOfMob.persistence.JarException;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,12 +59,17 @@ public class EmptyJar extends Jar {
             return true;
 
         if (entity instanceof Horse) {
-            player.getInventory().remove(player.getItemInHand());
             Location loc = entity.getLocation();
             Jar horseJar = new HorseJar(getUniqueId(), (Horse) entity);
-            JarOfMobPlugin.JARS.put(getUniqueId(), horseJar);
-            player.setItemInHand(horseJar.getItem());
-            loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
+            try {
+                JarOfMobPlugin.getJars().addJar(horseJar);
+                player.getInventory().remove(player.getItemInHand());
+                player.setItemInHand(horseJar.getItem());
+                entity.remove();
+                loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
+            } catch (JarException e) {
+                player.sendMessage(JarOfMobPlugin.PREFIX + "Could not jar that animal.");
+            }
             return true;
         }
 
