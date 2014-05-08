@@ -8,13 +8,17 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages jars using files.
  */
 public class JarFileManager implements JarPersistence {
     private final File directory;
+    private Map<Long, Jar> jarSave = new HashMap<Long, Jar>();
 
     public JarFileManager(File saveDirectory) {
         directory = saveDirectory;
@@ -27,6 +31,9 @@ public class JarFileManager implements JarPersistence {
 
     @Override
     public Jar getJar(long id) throws JarException {
+        if (jarSave.containsKey(id))
+            return jarSave.get(id);
+
         File jarFile = new File(directory, Long.toString(id));
         if (jarFile.exists()) {
             try {
@@ -67,10 +74,14 @@ public class JarFileManager implements JarPersistence {
         } catch (IOException e) {
             throw new JarException(e);
         }
+
+        jarSave.put(jar.getUniqueId(), jar);
     }
 
     @Override
     public void removeJar(long id) throws JarException {
+        jarSave.remove(id);
+
         File jarFile = new File(directory, Long.toString(id));
         if (jarFile.exists()) {
             if (!jarFile.delete()) {
