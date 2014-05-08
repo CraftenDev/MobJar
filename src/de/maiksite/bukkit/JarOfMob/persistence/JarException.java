@@ -11,4 +11,8 @@ public class JarException extends Exception {
     public JarException(Exception innerException) {
         super(innerException);
     }
+
+    public JarException(String message) {
+        super(message);
+    }
 }

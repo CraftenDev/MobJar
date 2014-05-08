@@ -2,7 +2,6 @@ package de.maiksite.bukkit.JarOfMob;
 
 import de.maiksite.bukkit.JarOfMob.jars.Jar;
 import de.maiksite.bukkit.JarOfMob.persistence.JarException;
-import de.maiksite.bukkit.JarOfMob.persistence.JarPersistence;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -59,7 +58,10 @@ public class JarListener implements Listener {
 
     private Jar jarFromItem(ItemStack item) {
         try {
-            return JarOfMobPlugin.getJars().getJar(Jar.getIdFromItemStack(item));
+            Long id = Jar.getIdFromItemStack(item);
+            if (id == null)
+                return null;
+            return JarOfMobPlugin.getJars().getJar(id);
         } catch (JarException e) {
             e.printStackTrace();
             return null;

@@ -33,6 +33,11 @@ public class HorseJar extends Jar {
         horseData = HorseSerializer.serialize(originalHorse);
     }
 
+    public HorseJar(long id, Map<String, Object> data) {
+        super(id);
+        horseData = data;
+    }
+
     @Override
     public Effect getRestoreEffect() {
         return Effect.POTION_BREAK;
@@ -71,12 +76,6 @@ public class HorseJar extends Jar {
             horse.setOwner(event.getPlayer());
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            try {
-                JarOfMobPlugin.getJars().removeJar(getUniqueId());
-            } catch (JarException e) {
-                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
-                return;
-            }
             event.getPlayer().getInventory().removeItem(event.getItem());
 
             Jar emptyJar = new EmptyJar(getUniqueId());
@@ -101,12 +100,6 @@ public class HorseJar extends Jar {
         event.setCancelled(true);
 
         if (event.getPlayer().getVehicle() == null) {
-            try {
-                JarOfMobPlugin.getJars().removeJar(getUniqueId());
-            } catch (JarException e) {
-                event.getPlayer().sendMessage(JarOfMobPlugin.PREFIX + "Could not open the jar.");
-                return;
-            }
             Jar emptyJar = new EmptyJar(getUniqueId());
             try {
                 JarOfMobPlugin.getJars().addJar(emptyJar);
@@ -125,5 +118,10 @@ public class HorseJar extends Jar {
             event.getPlayer().getInventory().removeItem(event.getItem());
             event.getPlayer().getInventory().addItem(emptyJar.getItem());
         }
+    }
+
+    @Override
+    public Map<String, Object> getCreatureData() {
+        return horseData;
     }
 }

@@ -13,13 +13,13 @@ import java.util.Map;
 public class HorseSerializer {
     public static Map<String, Object> serialize(Horse horse) {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("color", horse.getColor());
-        data.put("style", horse.getStyle());
+        data.put("color", horse.getColor().name());
+        data.put("style", horse.getStyle().name());
         data.put("age", horse.getAge());
         data.put("jumpStrength", horse.getJumpStrength());
         data.put("maxDomestication", horse.getMaxDomestication());
         data.put("domestication", horse.getDomestication());
-        data.put("variant", horse.getVariant());
+        data.put("variant", horse.getVariant().name());
 
         if (horse.isTamed())
             data.put("owner", horse.getOwner().getName());
@@ -38,13 +38,13 @@ public class HorseSerializer {
 
     @SuppressWarnings("unchecked")
     public static void deserialize(Map<String, Object> data, Horse horse) {
-        horse.setColor((Horse.Color) data.get("color"));
-        horse.setStyle((Horse.Style) data.get("style"));
-        data.put("age", horse.getAge());
-        data.put("jumpStrength", horse.getJumpStrength());
-        data.put("maxDomestication", horse.getMaxDomestication());
-        data.put("domestication", horse.getDomestication());
-        horse.setVariant((Horse.Variant) data.get("variant"));
+        horse.setColor(Horse.Color.valueOf((String) data.get("color")));
+        horse.setStyle(Horse.Style.valueOf((String) data.get("style")));
+        horse.setAge((Integer) data.get("age"));
+        horse.setJumpStrength((Double) data.get("jumpStrength"));
+        horse.setMaxDomestication((Integer) data.get("maxDomestication"));
+        horse.setDomestication((Integer) data.get("domestication"));
+        horse.setVariant(Horse.Variant.valueOf((String) data.get("variant")));
 
         if (data.containsKey("owner"))
             horse.setOwner(Bukkit.getOfflinePlayer((String) data.get("owner")));

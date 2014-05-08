@@ -11,6 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 public class EmptyJar extends Jar {
     public EmptyJar(long uniqueId) {
         super(uniqueId);
@@ -61,7 +63,10 @@ public class EmptyJar extends Jar {
         if (entity instanceof Horse) {
             Location loc = entity.getLocation();
             Jar horseJar = new HorseJar(getUniqueId(), (Horse) entity);
+            boolean removedEmpty = false;
             try {
+                JarOfMobPlugin.getJars().removeJar(getUniqueId());
+                removedEmpty = true;
                 JarOfMobPlugin.getJars().addJar(horseJar);
                 player.getInventory().remove(player.getItemInHand());
                 player.setItemInHand(horseJar.getItem());
@@ -69,6 +74,12 @@ public class EmptyJar extends Jar {
                 loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
             } catch (JarException e) {
                 player.sendMessage(JarOfMobPlugin.PREFIX + "Could not jar that animal.");
+                if (removedEmpty)
+                    try {
+                        JarOfMobPlugin.getJars().addJar(this);
+                    } catch (JarException e1) {
+                        player.sendMessage(JarOfMobPlugin.PREFIX + "Could not give back an empty jar.");
+                    }
             }
             return true;
         }
@@ -87,5 +98,10 @@ public class EmptyJar extends Jar {
     @Override
     public void onDrinkJar(PlayerItemConsumeEvent event) {
         event.setCancelled(true);
+    }
+
+    @Override
+    public Map<String, Object> getCreatureData() {
+        return null;
     }
 }

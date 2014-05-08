@@ -1,6 +1,5 @@
 package de.maiksite.bukkit.JarOfMob.jars;
 
-import de.maiksite.bukkit.JarOfMob.persistence.JarException;
 import de.maiksite.bukkit.JarOfMob.util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -16,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A jar that contains a mob.
@@ -134,4 +134,11 @@ public abstract class Jar implements Serializable {
     }
 
     public abstract void onDrinkJar(PlayerItemConsumeEvent event);
+
+    /**
+     * Gets the serialized creature.
+     *
+     * @return Serialized creature
+     */
+    public abstract Map<String, Object> getCreatureData();
 }
