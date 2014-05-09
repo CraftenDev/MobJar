@@ -1,4 +1,4 @@
-package de.maiksite.bukkit.JarOfMob.persistence;
+package de.craften.plugins.mobjar.persistence;
 
 /**
  * Exception that is thrown when a jar can't be saved.

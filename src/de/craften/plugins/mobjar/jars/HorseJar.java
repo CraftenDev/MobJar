@@ -1,14 +1,13 @@
-package de.maiksite.bukkit.JarOfMob.jars;
+package de.craften.plugins.mobjar.jars;
 
-import de.maiksite.bukkit.JarOfMob.JarOfMobPlugin;
-import de.maiksite.bukkit.JarOfMob.persistence.JarException;
-import de.maiksite.bukkit.JarOfMob.persistence.serialization.HorseSerializer;
+import de.craften.plugins.mobjar.JarOfMobPlugin;
+import de.craften.plugins.mobjar.persistence.JarException;
+import de.craften.plugins.mobjar.persistence.serialization.HorseSerializer;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Horse;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,8 +22,6 @@ import java.util.Map;
 public class HorseJar extends Jar {
     /**
      * Details about the horse in this jar.
-     *
-     * @serial
      */
     private Map<String, Object> horseData;
 
@@ -56,7 +53,7 @@ public class HorseJar extends Jar {
     }
 
     @Override
-    public String getJarName() {
+    public String getName() {
         return "Liquid Horse";
     }
 
@@ -67,7 +64,7 @@ public class HorseJar extends Jar {
     }
 
     @Override
-    public void onOpenJar(PlayerInteractEvent event) {
+    public void onLeftClick(PlayerInteractEvent event) {
         event.setCancelled(true);
         Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
 
@@ -91,12 +88,7 @@ public class HorseJar extends Jar {
     }
 
     @Override
-    public void onRightClickEntity(PlayerInteractEntityEvent event) {
-        event.setCancelled(true);
-    }
-
-    @Override
-    public void onDrinkJar(PlayerItemConsumeEvent event) {
+    public void onDrink(PlayerItemConsumeEvent event) {
         event.setCancelled(true);
 
         if (event.getPlayer().getVehicle() == null) {

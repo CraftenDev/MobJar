@@ -1,7 +1,7 @@
-package de.maiksite.bukkit.JarOfMob;
+package de.craften.plugins.mobjar;
 
-import de.maiksite.bukkit.JarOfMob.jars.Jar;
-import de.maiksite.bukkit.JarOfMob.persistence.JarException;
+import de.craften.plugins.mobjar.jars.Jar;
+import de.craften.plugins.mobjar.persistence.JarException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -32,7 +32,7 @@ public class JarListener implements Listener {
         Jar droppedJar = jarFromItem(event.getItem());
         if (droppedJar != null) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-                droppedJar.onOpenJar(event);
+                droppedJar.onLeftClick(event);
             }
         }
     }
@@ -52,7 +52,7 @@ public class JarListener implements Listener {
     private void stopConsuming(PlayerItemConsumeEvent event) {
         Jar jar = jarFromItem(event.getPlayer().getItemInHand());
         if (jar != null) {
-            jar.onDrinkJar(event);
+            jar.onDrink(event);
         }
     }
 

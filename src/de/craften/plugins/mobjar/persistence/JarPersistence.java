@@ -1,6 +1,6 @@
-package de.maiksite.bukkit.JarOfMob.persistence;
+package de.craften.plugins.mobjar.persistence;
 
-import de.maiksite.bukkit.JarOfMob.jars.Jar;
+import de.craften.plugins.mobjar.jars.Jar;
 
 /**
  * Loads and saves jars persistent.

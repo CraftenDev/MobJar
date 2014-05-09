@@ -1,8 +1,8 @@
-package de.maiksite.bukkit.JarOfMob.persistence;
+package de.craften.plugins.mobjar.persistence;
 
-import de.maiksite.bukkit.JarOfMob.jars.EmptyJar;
-import de.maiksite.bukkit.JarOfMob.jars.HorseJar;
-import de.maiksite.bukkit.JarOfMob.jars.Jar;
+import de.craften.plugins.mobjar.jars.EmptyJar;
+import de.craften.plugins.mobjar.jars.HorseJar;
+import de.craften.plugins.mobjar.jars.Jar;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;

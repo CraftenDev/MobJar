@@ -1,5 +1,5 @@
 name: JarOfMob
-main: de.maiksite.bukkit.JarOfMob.JarOfMobPlugin
+main: de.craften.plugins.mobjar.JarOfMobPlugin
 version: 1.0.0
 softdepend: [Vault]
 commands:

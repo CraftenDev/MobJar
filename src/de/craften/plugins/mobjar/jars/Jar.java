@@ -1,6 +1,6 @@
-package de.maiksite.bukkit.JarOfMob.jars;
+package de.craften.plugins.mobjar.jars;
 
-import de.maiksite.bukkit.JarOfMob.util.StringUtil;
+import de.craften.plugins.mobjar.util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +19,9 @@ import java.util.Map;
 /**
  * A jar that contains a mob.
  */
-public abstract class Jar implements Serializable {
+public abstract class Jar {
     /**
      * The unique ID of this jar.
-     *
-     * @serial
      */
     private final long uniqueId;
 
@@ -105,7 +102,7 @@ public abstract class Jar implements Serializable {
      *
      * @return This jar's beautiful, human readable name
      */
-    public abstract String getJarName();
+    public abstract String getName();
 
     /**
      * Gets an item that represents this jar.
@@ -119,21 +116,51 @@ public abstract class Jar implements Serializable {
         List<String> lore = new ArrayList<String>();
         lore.add(StringUtil.convertToInvisibleString("#" + getUniqueId()));
         meta.setLore(lore);
-        meta.setDisplayName(getJarName());
+        meta.setDisplayName(getName());
         theJar.setItemMeta(meta);
         return theJar;
     }
 
+    /**
+     * Gets the item that represents this jar, without the lore.
+     * Should be a potion.
+     *
+     * @return Item that represents this jar
+     */
     protected abstract ItemStack getJarItem();
 
-    public abstract void onOpenJar(PlayerInteractEvent event);
+    /**
+     * This method is called when a player opens this jar.
+     *
+     * @param event Event as raised by bukkit
+     */
+    public void onLeftClick(PlayerInteractEvent event) {
+    }
 
-    public abstract void onRightClickEntity(PlayerInteractEntityEvent event);
+    /**
+     * This method is called when a player right-clicks an entity holding this jar.
+     *
+     * @param event Event as raised by bukkit
+     */
+    public void onRightClickEntity(PlayerInteractEntityEvent event) {
+    }
 
+    /**
+     * This method is called when a player drops this jar.
+     *
+     * @param event Event as raised by bukkit
+     */
     public void onDrop(PlayerDropItemEvent event) {
     }
 
-    public abstract void onDrinkJar(PlayerItemConsumeEvent event);
+    /**
+     * This method is called when a player drinks this jar.
+     *
+     * @param event Event as raised by bukkit
+     */
+    public void onDrink(PlayerItemConsumeEvent event) {
+        event.setCancelled(true);
+    }
 
     /**
      * Gets the serialized creature.
