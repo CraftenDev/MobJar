@@ -68,7 +68,7 @@ public class EmptyJar extends Jar {
                 removedEmpty = true;
                 JarOfMobPlugin.getJars().addJar(horseJar);
                 player.getInventory().remove(player.getItemInHand());
-                player.setItemInHand(horseJar.getItem());
+                player.getInventory().addItem(horseJar.getItem());
                 entity.remove();
                 loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
             } catch (JarException e) {
