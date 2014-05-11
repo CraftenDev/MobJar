@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class JarListener implements Listener {
     @EventHandler
-    private void playerDropItem(PlayerDropItemEvent event) {
+    public void playerDropItem(PlayerDropItemEvent event) {
         Jar droppedJar = jarFromItem(event.getItemDrop().getItemStack());
         if (droppedJar != null) {
             droppedJar.onDrop(event);
@@ -21,7 +21,7 @@ public class JarListener implements Listener {
     }
 
     @EventHandler
-    private void playerInteract(PlayerInteractEvent event) {
+    public void playerInteract(PlayerInteractEvent event) {
         //_AIR-events are canceled by default, so ignore that
         if (event.getAction() != Action.LEFT_CLICK_AIR
                 && event.getAction() != Action.RIGHT_CLICK_AIR && event.isCancelled())
@@ -38,7 +38,7 @@ public class JarListener implements Listener {
     }
 
     @EventHandler
-    private void playerInteractEntity(PlayerInteractEntityEvent event) {
+    public void playerInteractEntity(PlayerInteractEntityEvent event) {
         if (event.isCancelled())
             return;
 
@@ -49,19 +49,19 @@ public class JarListener implements Listener {
     }
 
     @EventHandler
-    private void stopConsuming(PlayerItemConsumeEvent event) {
-        Jar jar = jarFromItem(event.getPlayer().getItemInHand());
+    public void stopConsuming(PlayerItemConsumeEvent event) {
+        Jar jar = jarFromItem(event.getItem());
         if (jar != null) {
             jar.onDrink(event);
         }
     }
 
-    private Jar jarFromItem(ItemStack item) {
+    public Jar jarFromItem(ItemStack item) {
         try {
             Long id = Jar.getIdFromItemStack(item);
             if (id == null)
                 return null;
-            return JarOfMobPlugin.getJars().getJar(id);
+            return MobJarPlugin.getJars().getJar(id);
         } catch (JarException e) {
             e.printStackTrace();
             return null;

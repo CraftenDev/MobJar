@@ -3,7 +3,6 @@ package de.craften.plugins.mobjar.persistence;
 import de.craften.plugins.mobjar.jars.EmptyJar;
 import de.craften.plugins.mobjar.jars.HorseJar;
 import de.craften.plugins.mobjar.jars.Jar;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -52,8 +51,7 @@ public class JarFileManager implements JarPersistence {
                 throw new JarException("Loading the jar failed", e);
             }
         } else {
-            Bukkit.getLogger().warning("File not found");
-            return null;
+            throw new JarNotFoundException(id);
         }
     }
 

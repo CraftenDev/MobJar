@@ -1,6 +1,6 @@
-name: JarOfMob
-main: de.craften.plugins.mobjar.JarOfMobPlugin
-version: 1.0.0
+name: MobJar
+main: de.craften.plugins.mobjar.MobJarPlugin
+version: VERSION
 softdepend: [Vault]
 commands:
    jar:
