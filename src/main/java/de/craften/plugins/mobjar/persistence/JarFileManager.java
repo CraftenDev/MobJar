@@ -39,13 +39,16 @@ public class JarFileManager implements JarPersistence {
             try {
                 YamlConfiguration fc = new YamlConfiguration();
                 fc.load(jarFile);
+                Jar jar;
                 if (fc.getString("type").equals("horse")) {
-                    return new HorseJar(id, new SerializedHorse(fc.getConfigurationSection("horse")));
+                    jar = new HorseJar(id, new SerializedHorse(fc.getConfigurationSection("data")));
                 } else if (fc.getString("type").equals("empty")) {
-                    return new EmptyJar(id);
+                    jar = new EmptyJar(id);
                 } else {
                     throw new JarException("Unknown jar type");
                 }
+                jarSave.put(jar.getUniqueId(), jar);
+                return jar;
             } catch (IOException e) {
                 throw new JarException("Loading the jar failed", e);
             } catch (InvalidConfigurationException e) {
@@ -72,7 +75,7 @@ public class JarFileManager implements JarPersistence {
 
             if (jar.getSerialized() != null)
                 fc.set("data", jar.getSerialized().serialize());
-            
+
             fc.save(jarFile);
         } catch (IOException e) {
             throw new JarException(e);

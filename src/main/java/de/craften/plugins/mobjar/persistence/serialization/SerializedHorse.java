@@ -34,6 +34,8 @@ public class SerializedHorse extends SerializedCreature {
         if (data.contains("chest")) {
             horse.setCarryingChest(true);
             InventorySerializer.deserialize(data.get("chest"), horse.getInventory());
+        } else {
+            horse.setCarryingChest(false);
         }
 
         if (data.contains("armor")) {
@@ -56,10 +58,12 @@ public class SerializedHorse extends SerializedCreature {
         if (horse.isTamed())
             data.set("owner", horse.getOwner().getName());
 
-        if (horse.getInventory().getArmor() != null)
-            data.set("armor", horse.getInventory().getArmor().serialize());
+        if (horse.getInventory().getArmor() != null) {
+            data.createSection("armor", horse.getInventory().getArmor().serialize());
+        }
+
         if (horse.getInventory().getSaddle() != null)
-            data.set("saddle", horse.getInventory().getSaddle().serialize());
+            data.createSection("saddle", horse.getInventory().getSaddle().serialize());
 
         if (horse.isCarryingChest()) {
             data.set("chest", InventorySerializer.serialize(horse.getInventory()));
