@@ -31,13 +31,7 @@ public class SerializedHorseTest {
         when(inventoryMock.getArmor()).thenReturn(null);
         when(inventoryMock.getSaddle()).thenReturn(null);
 
-        Horse horse = mock(Horse.class);
-        when(horse.getColor()).thenReturn(Horse.Color.BROWN);
-        when(horse.getVariant()).thenReturn(Horse.Variant.DONKEY);
-        when(horse.getStyle()).thenReturn(Horse.Style.BLACK_DOTS);
-        when(horse.getDomestication()).thenReturn(21);
-        when(horse.getMaxDomestication()).thenReturn(42);
-        when(horse.getJumpStrength()).thenReturn(3.14159);
+        Horse horse = givenAHorse();
         when(horse.isCarryingChest()).thenReturn(false);
         when(horse.getInventory()).thenReturn(inventoryMock);
 
@@ -45,12 +39,7 @@ public class SerializedHorseTest {
         horse = mock(Horse.class);
         serializedHorse.applyTo(horse);
 
-        verify(horse).setColor(eq(Horse.Color.BROWN));
-        verify(horse).setVariant(eq(Horse.Variant.DONKEY));
-        verify(horse).setStyle(eq(Horse.Style.BLACK_DOTS));
-        verify(horse).setDomestication(eq(21));
-        verify(horse).setMaxDomestication(eq(42));
-        verify(horse).setJumpStrength(eq(3.14159));
+        verifyEqualsGivenHorse(horse);
         verify(horse).setCarryingChest(eq(false));
     }
 
@@ -65,13 +54,7 @@ public class SerializedHorseTest {
         when(inventoryMock.getArmor()).thenReturn(expectedArmor);
         when(inventoryMock.getSaddle()).thenReturn(expectedSaddle);
 
-        Horse horse = mock(Horse.class);
-        when(horse.getColor()).thenReturn(Horse.Color.BROWN);
-        when(horse.getVariant()).thenReturn(Horse.Variant.DONKEY);
-        when(horse.getStyle()).thenReturn(Horse.Style.BLACK_DOTS);
-        when(horse.getDomestication()).thenReturn(21);
-        when(horse.getMaxDomestication()).thenReturn(42);
-        when(horse.getJumpStrength()).thenReturn(3.14159);
+        Horse horse = givenAHorse();
         when(horse.isCarryingChest()).thenReturn(false);
         when(horse.getInventory()).thenReturn(inventoryMock);
 
@@ -105,13 +88,7 @@ public class SerializedHorseTest {
         when(horse.getInventory()).thenReturn(inventoryMock);
         serializedHorse.applyTo(horse);
 
-        verify(horse).setColor(eq(Horse.Color.BROWN));
-        verify(horse).setVariant(eq(Horse.Variant.DONKEY));
-        verify(horse).setStyle(eq(Horse.Style.BLACK_DOTS));
-        verify(horse).setDomestication(eq(21));
-        verify(horse).setMaxDomestication(eq(42));
-        verify(horse).setJumpStrength(eq(3.14159));
-        verify(horse).setCarryingChest(eq(false));
+        verifyEqualsGivenHorse(horse);
     }
 
     @Test
@@ -127,13 +104,7 @@ public class SerializedHorseTest {
         when(inventoryMock.getSaddle()).thenReturn(null);
         when(inventoryMock.getContents()).thenReturn(expectedInventory);
 
-        Horse horse = mock(Horse.class);
-        when(horse.getColor()).thenReturn(Horse.Color.BROWN);
-        when(horse.getVariant()).thenReturn(Horse.Variant.DONKEY);
-        when(horse.getStyle()).thenReturn(Horse.Style.BLACK_DOTS);
-        when(horse.getDomestication()).thenReturn(21);
-        when(horse.getMaxDomestication()).thenReturn(42);
-        when(horse.getJumpStrength()).thenReturn(3.14159);
+        Horse horse = givenAHorse();
         when(horse.isCarryingChest()).thenReturn(true);
         when(horse.getInventory()).thenReturn(inventoryMock);
 
@@ -153,12 +124,7 @@ public class SerializedHorseTest {
         when(horse.getInventory()).thenReturn(inventoryMock);
         serializedHorse.applyTo(horse);
 
-        verify(horse).setColor(eq(Horse.Color.BROWN));
-        verify(horse).setVariant(eq(Horse.Variant.DONKEY));
-        verify(horse).setStyle(eq(Horse.Style.BLACK_DOTS));
-        verify(horse).setDomestication(eq(21));
-        verify(horse).setMaxDomestication(eq(42));
-        verify(horse).setJumpStrength(eq(3.14159));
+        verifyEqualsGivenHorse(horse);
         verify(horse).setCarryingChest(eq(true));
         verify(inventoryMock, times(1)).setContents(any(ItemStack[].class));
 
@@ -175,5 +141,30 @@ public class SerializedHorseTest {
         ItemMeta mockedMeta = mock(ItemMeta.class);
         when(itemFactory.getItemMeta(any(Material.class))).thenReturn(mockedMeta);
         when(Bukkit.getItemFactory()).thenReturn(itemFactory);
+    }
+
+    private Horse givenAHorse() {
+        Horse horse = mock(Horse.class);
+        when(horse.getColor()).thenReturn(Horse.Color.BROWN);
+        when(horse.getVariant()).thenReturn(Horse.Variant.DONKEY);
+        when(horse.getStyle()).thenReturn(Horse.Style.BLACK_DOTS);
+        when(horse.getDomestication()).thenReturn(21);
+        when(horse.getMaxDomestication()).thenReturn(42);
+        when(horse.getJumpStrength()).thenReturn(3.14159);
+        when(horse.getCustomName()).thenReturn("Some wild horse");
+        when(horse.isCustomNameVisible()).thenReturn(true);
+
+        return horse;
+    }
+
+    private void verifyEqualsGivenHorse(Horse horse) {
+        verify(horse).setColor(eq(Horse.Color.BROWN));
+        verify(horse).setVariant(eq(Horse.Variant.DONKEY));
+        verify(horse).setStyle(eq(Horse.Style.BLACK_DOTS));
+        verify(horse).setDomestication(eq(21));
+        verify(horse).setMaxDomestication(eq(42));
+        verify(horse).setJumpStrength(eq(3.14159));
+        verify(horse).setCustomName(eq("Some wild horse"));
+        verify(horse).setCustomNameVisible(eq(true));
     }
 }

@@ -27,6 +27,8 @@ public class SerializedHorse extends SerializedCreature {
         horse.setMaxDomestication(data.getInt("maxDomestication"));
         horse.setDomestication(data.getInt("domestication"));
         horse.setVariant(Horse.Variant.valueOf(data.getString("variant")));
+        horse.setCustomName(data.getString("customName"));
+        horse.setCustomNameVisible(data.getBoolean("customNameVisible"));
 
         if (data.contains("owner"))
             horse.setOwner(Bukkit.getOfflinePlayer(data.getString("owner")));
@@ -54,6 +56,8 @@ public class SerializedHorse extends SerializedCreature {
         data.set("maxDomestication", horse.getMaxDomestication());
         data.set("domestication", horse.getDomestication());
         data.set("variant", horse.getVariant().name());
+        data.set("customName", horse.getCustomName());
+        data.set("customNameVisible", horse.isCustomNameVisible());
 
         if (horse.isTamed())
             data.set("owner", horse.getOwner().getName());
