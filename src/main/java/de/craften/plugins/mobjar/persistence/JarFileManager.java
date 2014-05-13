@@ -62,13 +62,17 @@ public class JarFileManager implements JarPersistence {
 
         try {
             FileConfiguration fc = new YamlConfiguration();
+
             if (jar instanceof HorseJar)
                 fc.set("type", "horse");
             else if (jar instanceof EmptyJar)
                 fc.set("type", "empty");
             else
                 throw new JarException("Unknown jar type");
-            fc.set("data", jar.getSerialized().serialize());
+
+            if (jar.getSerialized() != null)
+                fc.set("data", jar.getSerialized().serialize());
+            
             fc.save(jarFile);
         } catch (IOException e) {
             throw new JarException(e);
