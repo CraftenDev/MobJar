@@ -2,6 +2,7 @@ package de.craften.plugins.mobjar.jars;
 
 import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
+import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,8 +10,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Map;
 
 public class EmptyJar extends Jar {
     public EmptyJar(long uniqueId) {
@@ -30,6 +29,11 @@ public class EmptyJar extends Jar {
     @Override
     public boolean canRestoreTo(Location location) {
         return false;
+    }
+
+    @Override
+    public SerializedCreature getSerialized() {
+        return null;
     }
 
     @Override
@@ -92,10 +96,5 @@ public class EmptyJar extends Jar {
             jarEntity(event.getPlayer().getVehicle(), event.getPlayer());
 
         event.setCancelled(true);
-    }
-
-    @Override
-    public Map<String, Object> getCreatureData() {
-        return null;
     }
 }

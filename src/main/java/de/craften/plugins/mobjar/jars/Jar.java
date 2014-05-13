@@ -1,5 +1,6 @@
 package de.craften.plugins.mobjar.jars;
 
+import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
 import de.craften.plugins.mobjar.util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A jar that contains a mob.
@@ -98,6 +98,13 @@ public abstract class Jar {
     public abstract boolean canRestoreTo(Location location);
 
     /**
+     * Gets the serialized creature that is in this jar.
+     *
+     * @return The serialized creature that is in this jar
+     */
+    public abstract SerializedCreature getSerialized();
+
+    /**
      * Returns this jar's beautiful, human readable name.
      *
      * @return This jar's beautiful, human readable name
@@ -161,11 +168,4 @@ public abstract class Jar {
     public void onDrink(PlayerItemConsumeEvent event) {
         event.setCancelled(true);
     }
-
-    /**
-     * Gets the serialized creature.
-     *
-     * @return Serialized creature
-     */
-    public abstract Map<String, Object> getCreatureData();
 }

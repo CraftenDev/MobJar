@@ -2,7 +2,8 @@ package de.craften.plugins.mobjar.jars;
 
 import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
-import de.craften.plugins.mobjar.persistence.serialization.HorseSerializer;
+import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
+import de.craften.plugins.mobjar.persistence.serialization.SerializedHorse;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -14,8 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-import java.util.Map;
-
 /**
  * A jar that contains a horse.
  */
@@ -23,14 +22,14 @@ public class HorseJar extends Jar {
     /**
      * Details about the horse in this jar.
      */
-    private Map<String, Object> horseData;
+    private SerializedHorse horseData;
 
     public HorseJar(long id, Horse originalHorse) {
         super(id);
-        horseData = HorseSerializer.serialize(originalHorse);
+        horseData = new SerializedHorse(originalHorse);
     }
 
-    public HorseJar(long id, Map<String, Object> data) {
+    public HorseJar(long id, SerializedHorse data) {
         super(id);
         horseData = data;
     }
@@ -43,7 +42,7 @@ public class HorseJar extends Jar {
     @Override
     public Creature restoreTo(Location location) {
         Horse horse = location.getWorld().spawn(location, Horse.class);
-        HorseSerializer.deserialize(horseData, horse);
+        horseData.applyTo(horse);
         return horse;
     }
 
@@ -55,6 +54,11 @@ public class HorseJar extends Jar {
     @Override
     public String getName() {
         return "Liquid Horse";
+    }
+
+    @Override
+    public SerializedCreature getSerialized() {
+        return horseData;
     }
 
     @Override
@@ -119,10 +123,5 @@ public class HorseJar extends Jar {
             event.getPlayer().getInventory().removeItem(event.getItem());
             event.getPlayer().getInventory().addItem(emptyJarItem);
         }
-    }
-
-    @Override
-    public Map<String, Object> getCreatureData() {
-        return horseData;
     }
 }

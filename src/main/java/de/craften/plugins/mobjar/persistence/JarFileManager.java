@@ -3,6 +3,7 @@ package de.craften.plugins.mobjar.persistence;
 import de.craften.plugins.mobjar.jars.EmptyJar;
 import de.craften.plugins.mobjar.jars.HorseJar;
 import de.craften.plugins.mobjar.jars.Jar;
+import de.craften.plugins.mobjar.persistence.serialization.SerializedHorse;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,10 +37,10 @@ public class JarFileManager implements JarPersistence {
         File jarFile = new File(directory, Long.toString(id));
         if (jarFile.exists()) {
             try {
-                FileConfiguration fc = new YamlConfiguration();
+                YamlConfiguration fc = new YamlConfiguration();
                 fc.load(jarFile);
                 if (fc.getString("type").equals("horse")) {
-                    return new HorseJar(id, fc.getConfigurationSection("data").getValues(true));
+                    return new HorseJar(id, new SerializedHorse(fc.getConfigurationSection("horse")));
                 } else if (fc.getString("type").equals("empty")) {
                     return new EmptyJar(id);
                 } else {
@@ -67,7 +68,7 @@ public class JarFileManager implements JarPersistence {
                 fc.set("type", "empty");
             else
                 throw new JarException("Unknown jar type");
-            fc.set("data", jar.getCreatureData());
+            fc.set("data", jar.getSerialized().serialize());
             fc.save(jarFile);
         } catch (IOException e) {
             throw new JarException(e);
