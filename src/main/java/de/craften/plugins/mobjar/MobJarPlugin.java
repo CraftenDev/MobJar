@@ -28,6 +28,8 @@ public class MobJarPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         File jarDir = new File(getDataFolder(), "jars");
         if (!jarDir.exists())
             jarDir.mkdirs();
