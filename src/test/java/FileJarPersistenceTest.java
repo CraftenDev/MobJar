@@ -1,7 +1,7 @@
 import de.craften.plugins.mobjar.jars.EmptyJar;
 import de.craften.plugins.mobjar.jars.Jar;
+import de.craften.plugins.mobjar.persistence.FileJarPersistence;
 import de.craften.plugins.mobjar.persistence.JarException;
-import de.craften.plugins.mobjar.persistence.JarFileManager;
 import de.craften.plugins.mobjar.persistence.JarNotFoundException;
 import de.craften.plugins.mobjar.persistence.JarPersistence;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class JarFileManagerTest {
+public class FileJarPersistenceTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     @Rule
@@ -23,7 +23,7 @@ public class JarFileManagerTest {
 
     @Before
     public void initialize() throws IOException {
-        persistence = new JarFileManager(folder.newFolder("jars"));
+        persistence = new FileJarPersistence(folder.newFolder("jars"));
     }
 
     @Test

@@ -11,14 +11,14 @@ commands:
 permissions:
    mobjar.*:
       default: op
-      description: Gives all jar permissions
+      description: Gives all jar permissions (except mobjar.free)
       children:
          mobjar.jar: true
          mobjar.use: true
          mobjar.takemounted: true
          mobjar.steal: true
    mobjar.jar:
-      default: op
+      default: true
       description: Allows getting jars using /jar.
    mobjar.use:
       default: true

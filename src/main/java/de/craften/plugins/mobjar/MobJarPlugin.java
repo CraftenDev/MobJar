@@ -2,8 +2,8 @@ package de.craften.plugins.mobjar;
 
 import de.craften.plugins.mobjar.jars.EmptyJar;
 import de.craften.plugins.mobjar.jars.Jar;
+import de.craften.plugins.mobjar.persistence.FileJarPersistence;
 import de.craften.plugins.mobjar.persistence.JarException;
-import de.craften.plugins.mobjar.persistence.JarFileManager;
 import de.craften.plugins.mobjar.persistence.JarPersistence;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -31,7 +31,7 @@ public class MobJarPlugin extends JavaPlugin {
         File jarDir = new File(getDataFolder(), "jars");
         if (!jarDir.exists())
             jarDir.mkdirs();
-        jars = new JarFileManager(jarDir);
+        jars = new FileJarPersistence(jarDir);
 
         if (!setupEconomy() && getConfig().getDouble("jarprice") != 0)
             getLogger().warning("No economy plugin found (or missing Vault), jars will be free!");

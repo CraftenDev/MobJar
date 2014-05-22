@@ -16,11 +16,11 @@ import java.util.Map;
 /**
  * Manages jars using files.
  */
-public class JarFileManager implements JarPersistence {
+public class FileJarPersistence implements JarPersistence {
     private final File directory;
     private Map<Long, Jar> jarSave = new HashMap<Long, Jar>();
 
-    public JarFileManager(File saveDirectory) {
+    public FileJarPersistence(File saveDirectory) {
         directory = saveDirectory;
     }
 
