@@ -8,10 +8,9 @@ import org.bukkit.inventory.ItemStack;
 /**
  * A horse that can be saved as and loaded from a string.
  */
-public class SerializedHorse extends SerializedCreature {
+public class SerializedHorse extends SerializedCreature<Horse> {
     public SerializedHorse(Horse horse) {
-        super();
-        serializeHorse(horse);
+        super(horse);
     }
 
     public SerializedHorse(ConfigurationSection serialized) {
@@ -19,7 +18,8 @@ public class SerializedHorse extends SerializedCreature {
     }
 
     @SuppressWarnings("unchecked")
-    public void applyTo(Horse horse) {
+    @Override
+    public void applyOn(Horse horse) {
         horse.setColor(Horse.Color.valueOf(data.getString("color")));
         horse.setStyle(Horse.Style.valueOf(data.getString("style")));
         horse.setAge(data.getInt("age"));
@@ -48,7 +48,8 @@ public class SerializedHorse extends SerializedCreature {
         }
     }
 
-    private void serializeHorse(Horse horse) {
+    @Override
+    protected void serialize(Horse horse) {
         data.set("color", horse.getColor().name());
         data.set("style", horse.getStyle().name());
         data.set("age", horse.getAge());

@@ -37,7 +37,7 @@ public class SerializedHorseTest {
 
         SerializedHorse serializedHorse = new SerializedHorse(horse);
         horse = mock(Horse.class);
-        serializedHorse.applyTo(horse);
+        serializedHorse.applyOn(horse);
 
         verifyEqualsGivenHorse(horse);
         verify(horse).setCarryingChest(eq(false));
@@ -86,7 +86,7 @@ public class SerializedHorseTest {
 
         horse = mock(Horse.class);
         when(horse.getInventory()).thenReturn(inventoryMock);
-        serializedHorse.applyTo(horse);
+        serializedHorse.applyOn(horse);
 
         verifyEqualsGivenHorse(horse);
     }
@@ -122,7 +122,7 @@ public class SerializedHorseTest {
         }).when(inventoryMock).setContents(any(ItemStack[].class));
         horse = mock(Horse.class);
         when(horse.getInventory()).thenReturn(inventoryMock);
-        serializedHorse.applyTo(horse);
+        serializedHorse.applyOn(horse);
 
         verifyEqualsGivenHorse(horse);
         verify(horse).setCarryingChest(eq(true));
