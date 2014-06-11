@@ -24,6 +24,6 @@ public class SerializedWolf extends SerializedCreature<Wolf> {
     protected void serialize(Wolf creature) {
         data.set("customName", creature.getCustomName());
         data.set("showCustomName", creature.isCustomNameVisible());
-        data.set("collarColor", creature.getCollarColor());
+        data.set("collarColor", creature.getCollarColor().name());
     }
 }
