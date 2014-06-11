@@ -2,12 +2,18 @@ package de.craften.plugins.mobjar.persistence.serialization;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Creature;
 
-public class SerializedCreature {
+public abstract class SerializedCreature<T extends Creature> {
     protected final ConfigurationSection data;
 
-    protected SerializedCreature() {
+    private SerializedCreature() {
         data = new YamlConfiguration();
+    }
+
+    public SerializedCreature(T creature) {
+        this();
+        serialize(creature);
     }
 
     protected SerializedCreature(ConfigurationSection serializedData) {
@@ -17,4 +23,8 @@ public class SerializedCreature {
     public final ConfigurationSection serialize() {
         return data;
     }
+
+    public abstract void applyOn(T creature);
+
+    protected abstract void serialize(T creature);
 }

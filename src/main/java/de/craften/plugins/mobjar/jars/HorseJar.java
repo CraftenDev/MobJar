@@ -2,7 +2,6 @@ package de.craften.plugins.mobjar.jars;
 
 import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
-import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
 import de.craften.plugins.mobjar.persistence.serialization.SerializedHorse;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -18,31 +17,19 @@ import org.bukkit.potion.PotionType;
 /**
  * A jar that contains a horse.
  */
-public class HorseJar extends Jar {
-    /**
-     * Details about the horse in this jar.
-     */
-    private SerializedHorse horseData;
-
+public class HorseJar extends Jar<Horse> {
     public HorseJar(long id, Horse originalHorse) {
-        super(id);
-        horseData = new SerializedHorse(originalHorse);
+        super(id, new SerializedHorse(originalHorse));
     }
 
     public HorseJar(long id, SerializedHorse data) {
-        super(id);
-        horseData = data;
+        super(id, data);
     }
 
     @Override
-    public Effect getRestoreEffect() {
-        return Effect.POTION_BREAK;
-    }
-
-    @Override
-    public Creature restoreTo(Location location) {
+    public Horse restoreTo(Location location) {
         Horse horse = location.getWorld().spawn(location, Horse.class);
-        horseData.applyTo(horse);
+        getSerialized().applyOn(horse);
         return horse;
     }
 
@@ -54,11 +41,6 @@ public class HorseJar extends Jar {
     @Override
     public String getName() {
         return "Liquid Horse";
-    }
-
-    @Override
-    public SerializedCreature getSerialized() {
-        return horseData;
     }
 
     @Override
@@ -75,7 +57,7 @@ public class HorseJar extends Jar {
         Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
 
         if (canRestoreTo(restoreLoc)) {
-            Horse horse = (Horse) restoreTo(restoreLoc);
+            Horse horse = restoreTo(restoreLoc);
             horse.setOwner(event.getPlayer());
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
@@ -110,7 +92,7 @@ public class HorseJar extends Jar {
             Location restoreLoc = event.getPlayer().getLocation();
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            Horse horse = (Horse) restoreTo(restoreLoc);
+            Horse horse = restoreTo(restoreLoc);
             if (horse.isAdult()) {
                 horse.setPassenger(event.getPlayer());
             } else {

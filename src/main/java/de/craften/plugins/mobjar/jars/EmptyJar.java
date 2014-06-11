@@ -2,7 +2,6 @@ package de.craften.plugins.mobjar.jars;
 
 import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
-import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class EmptyJar extends Jar {
     public EmptyJar(long uniqueId) {
-        super(uniqueId);
+        super(uniqueId, null);
     }
 
     @Override
@@ -29,11 +28,6 @@ public class EmptyJar extends Jar {
     @Override
     public boolean canRestoreTo(Location location) {
         return false;
-    }
-
-    @Override
-    public SerializedCreature getSerialized() {
-        return null;
     }
 
     @Override
@@ -63,31 +57,36 @@ public class EmptyJar extends Jar {
                 && !player.hasPermission("mobjar.steal"))
             return true;
 
+        Jar jar;
         if (entity instanceof Horse) {
-            Location loc = entity.getLocation();
-            Jar horseJar = new HorseJar(getUniqueId(), (Horse) entity);
-            boolean removedEmpty = false;
-            try {
-                MobJarPlugin.getJars().removeJar(getUniqueId());
-                entity.remove();
-                removedEmpty = true;
-                MobJarPlugin.getJars().addJar(horseJar);
-                player.getInventory().removeItem(player.getItemInHand());
-                player.getInventory().addItem(horseJar.getItem());
-                loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
-            } catch (JarException e) {
-                player.sendMessage(MobJarPlugin.PREFIX + "Could not jar that animal.");
-                if (removedEmpty)
-                    try {
-                        MobJarPlugin.getJars().addJar(this);
-                    } catch (JarException e1) {
-                        player.sendMessage(MobJarPlugin.PREFIX + "Could not give back an empty jar.");
-                    }
-            }
-            return true;
+            jar = new HorseJar(getUniqueId(), (Horse) entity);
+        } else if (entity instanceof Wolf) {
+            jar = new WolfJar(getUniqueId(), (Wolf) entity);
+        } else {
+            return false;
         }
 
-        return false;
+        boolean removedEmpty = false;
+        try {
+            MobJarPlugin.getJars().removeJar(getUniqueId());
+            Location loc = entity.getLocation();
+            entity.remove();
+            removedEmpty = true;
+            MobJarPlugin.getJars().addJar(jar);
+            player.getInventory().removeItem(player.getItemInHand());
+            player.getInventory().addItem(jar.getItem());
+            loc.getWorld().playEffect(entity.getLocation(), getRestoreEffect(), 0);
+        } catch (JarException e) {
+            player.sendMessage(MobJarPlugin.PREFIX + "Could not jar that animal.");
+            if (removedEmpty)
+                try {
+                    MobJarPlugin.getJars().addJar(this);
+                } catch (JarException e1) {
+                    player.sendMessage(MobJarPlugin.PREFIX + "Could not give back an empty jar.");
+                }
+        }
+
+        return true;
     }
 
     @Override

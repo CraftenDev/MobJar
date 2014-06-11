@@ -19,14 +19,17 @@ import java.util.List;
 /**
  * A jar that contains a mob.
  */
-public abstract class Jar {
+public abstract class Jar<T extends Creature> {
     /**
      * The unique ID of this jar.
      */
     private final long uniqueId;
 
-    public Jar(long uniqueId) {
+    private final SerializedCreature<T> serializedCreature;
+
+    public Jar(long uniqueId, SerializedCreature<T> serializedCreature) {
         this.uniqueId = uniqueId;
+        this.serializedCreature = serializedCreature;
     }
 
     /**
@@ -80,14 +83,17 @@ public abstract class Jar {
      *
      * @return The effect to play when the creature in this jar is restored
      */
-    public abstract Effect getRestoreEffect();
+    public Effect getRestoreEffect() {
+        return Effect.POTION_BREAK;
+    }
 
     /**
      * Restores the jar's content to the given location.
      *
      * @param location Location to restore the content to
+     * @return Creature that was just restored
      */
-    public abstract Creature restoreTo(Location location);
+    public abstract T restoreTo(Location location);
 
     /**
      * Checks if the creature in this jar can be safely spawned at the given location.
@@ -102,7 +108,9 @@ public abstract class Jar {
      *
      * @return The serialized creature that is in this jar
      */
-    public abstract SerializedCreature getSerialized();
+    public final SerializedCreature<T> getSerialized() {
+        return serializedCreature;
+    }
 
     /**
      * Returns this jar's beautiful, human readable name.

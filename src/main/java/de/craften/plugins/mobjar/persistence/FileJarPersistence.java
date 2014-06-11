@@ -3,7 +3,9 @@ package de.craften.plugins.mobjar.persistence;
 import de.craften.plugins.mobjar.jars.EmptyJar;
 import de.craften.plugins.mobjar.jars.HorseJar;
 import de.craften.plugins.mobjar.jars.Jar;
+import de.craften.plugins.mobjar.jars.WolfJar;
 import de.craften.plugins.mobjar.persistence.serialization.SerializedHorse;
+import de.craften.plugins.mobjar.persistence.serialization.SerializedWolf;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -42,6 +44,8 @@ public class FileJarPersistence implements JarPersistence {
                 Jar jar;
                 if (fc.getString("type").equals("horse")) {
                     jar = new HorseJar(id, new SerializedHorse(fc.getConfigurationSection("data")));
+                } else if (fc.getString("type").equals("wolf")) {
+                    jar = new WolfJar(id, new SerializedWolf(fc.getConfigurationSection("data")));
                 } else if (fc.getString("type").equals("empty")) {
                     jar = new EmptyJar(id);
                 } else {
@@ -68,6 +72,8 @@ public class FileJarPersistence implements JarPersistence {
 
             if (jar instanceof HorseJar)
                 fc.set("type", "horse");
+            else if (jar instanceof WolfJar)
+                fc.set("type", "wolf");
             else if (jar instanceof EmptyJar)
                 fc.set("type", "empty");
             else
