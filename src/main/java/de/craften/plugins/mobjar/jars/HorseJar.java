@@ -57,7 +57,7 @@ public class HorseJar extends Jar<Horse> {
         Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
 
         if (canRestoreTo(restoreLoc)) {
-            Horse horse = (Horse) restoreTo(restoreLoc);
+            Horse horse = restoreTo(restoreLoc);
             horse.setOwner(event.getPlayer());
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
@@ -92,7 +92,7 @@ public class HorseJar extends Jar<Horse> {
             Location restoreLoc = event.getPlayer().getLocation();
             restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            Horse horse = (Horse) restoreTo(restoreLoc);
+            Horse horse = restoreTo(restoreLoc);
             if (horse.isAdult()) {
                 horse.setPassenger(event.getPlayer());
             } else {
