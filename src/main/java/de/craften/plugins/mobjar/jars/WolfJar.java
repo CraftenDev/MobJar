@@ -4,8 +4,6 @@ import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
 import de.craften.plugins.mobjar.persistence.serialization.SerializedWolf;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +31,7 @@ public class WolfJar extends Jar<Wolf> {
 
     @Override
     public boolean canRestoreTo(Location location) {
-        return location.getBlock().isEmpty() && location.getBlock().getRelative(BlockFace.UP, 1).isEmpty();
+        return location.getBlock().isEmpty();
     }
 
     @Override
@@ -52,7 +50,7 @@ public class WolfJar extends Jar<Wolf> {
         if (event.isCancelled())
             return;
         event.setCancelled(true);
-        Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
+        Location restoreLoc = event.getClickedBlock().getLocation().add(0, 1, 0);
 
         if (canRestoreTo(restoreLoc)) {
             Wolf wolf = restoreTo(restoreLoc);
