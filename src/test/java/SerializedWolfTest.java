@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -23,6 +22,8 @@ public class SerializedWolfTest {
 
         wolf = mock(Wolf.class);
         serializedWolf.applyOn(wolf);
+
+        verifyEqualsGivenWolf(wolf);
     }
 
     private Wolf givenAWolf() {
