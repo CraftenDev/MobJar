@@ -50,7 +50,12 @@ public class WolfJar extends Jar<Wolf> {
         if (event.isCancelled())
             return;
         event.setCancelled(true);
-        Location restoreLoc = event.getClickedBlock().getLocation().add(0, 1, 0);
+        Location restoreLoc;
+        if (event.getClickedBlock() != null) {
+            restoreLoc = event.getClickedBlock().getLocation().add(0, 1, 0);
+        } else {
+            restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
+        }
 
         if (canRestoreTo(restoreLoc)) {
             Wolf wolf = restoreTo(restoreLoc);
