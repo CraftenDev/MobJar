@@ -29,10 +29,12 @@ public class JarListener implements Listener {
         event.setCancelled(false);
 
         Action action = event.getAction();
-        Jar droppedJar = jarFromItem(event.getItem());
-        if (droppedJar != null) {
+        Jar usedJar = jarFromItem(event.getItem());
+        if (usedJar != null) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-                droppedJar.onLeftClick(event);
+                usedJar.onLeftClick(event);
+            }else {
+                event.setCancelled(true); //disable any other interaction with jars, i.e. filling empty jars with water
             }
         }
     }
