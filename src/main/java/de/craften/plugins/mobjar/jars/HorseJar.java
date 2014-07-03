@@ -3,10 +3,8 @@ package de.craften.plugins.mobjar.jars;
 import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.JarException;
 import de.craften.plugins.mobjar.persistence.serialization.SerializedHorse;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -54,7 +52,14 @@ public class HorseJar extends Jar<Horse> {
         if (event.isCancelled())
             return;
         event.setCancelled(true);
-        Location restoreLoc = event.getPlayer().getLocation().add(event.getPlayer().getLocation().getDirection().multiply(2));
+
+        Location restoreLoc;
+        if (event.getClickedBlock() != null) {
+            restoreLoc = event.getClickedBlock().getLocation().add(0, 1, 0);
+        } else {
+            restoreLoc = event.getPlayer().getLocation()
+                    .add(event.getPlayer().getLocation().getDirection().setY(0).multiply(2));
+        }
 
         if (canRestoreTo(restoreLoc)) {
             Horse horse = restoreTo(restoreLoc);
