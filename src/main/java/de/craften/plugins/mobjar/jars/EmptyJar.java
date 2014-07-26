@@ -49,13 +49,20 @@ public class EmptyJar extends Jar {
             event.setCancelled(true);
     }
 
+    /**
+     * Tries to jar the given entity.
+     *
+     * @param entity Entity to jar
+     * @param player Player that wants to put the entity into a jar
+     * @return True if the entity was put into a jar, false if not
+     */
     private boolean jarEntity(Entity entity, Player player) {
         if (entity.getPassenger() != null
                 && !player.hasPermission("mobjar.takemounted"))
             return false;
-        if (entity instanceof Tameable && ((Tameable) entity).getOwner() != player
+        if (entity instanceof Tameable && !((Tameable) entity).getOwner().getName().equals(player.getName()) //TODO 1.7.9 must use UUID here
                 && !player.hasPermission("mobjar.steal"))
-            return true;
+            return false;
 
         Jar jar;
         if (entity instanceof Horse) {
