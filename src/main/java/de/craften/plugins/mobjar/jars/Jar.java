@@ -1,7 +1,10 @@
 package de.craften.plugins.mobjar.jars;
 
+import de.craften.plugins.mobjar.MobJarPlugin;
 import de.craften.plugins.mobjar.persistence.serialization.SerializedCreature;
 import de.craften.plugins.mobjar.util.StringUtil;
+import de.craften.plugins.mobjar.util.WorldUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -93,7 +96,31 @@ public abstract class Jar<T extends Creature> {
      * @param location Location to restore the content to
      * @return Creature that was just restored
      */
-    public abstract T restoreTo(Location location);
+    protected abstract T restoreTo(Location location);
+
+    /**
+     * Tries to restore the content of this jar at the given location.
+     *
+     * @param location       location to restore the content to
+     * @param restoreHandler handler for restore callbacks
+     */
+    protected final void tryRestoreTo(final Location location, final RestoreHandler<T> restoreHandler) {
+        final T entity = restoreTo(location);
+        // Another plugin may cancel the CreatureSpawnEvent so that the jar content is not actually restored!
+        // We check that in the next tick.
+        Bukkit.getScheduler().scheduleSyncDelayedTask(MobJarPlugin.getPlugin(MobJarPlugin.class), new Runnable() {
+            @Override
+            public void run() {
+                @SuppressWarnings("unchecked")
+                T spawnedHorse = (T) WorldUtil.getEntityByUuid(location.getWorld(), entity.getUniqueId(), entity.getClass());
+                if (spawnedHorse != null) {
+                    restoreHandler.onEntityRestored(spawnedHorse);
+                } else {
+                    restoreHandler.onRestoreFailed();
+                }
+            }
+        });
+    }
 
     /**
      * Checks if the creature in this jar can be safely spawned at the given location.

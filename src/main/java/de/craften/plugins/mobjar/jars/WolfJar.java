@@ -46,11 +46,12 @@ public class WolfJar extends Jar<Wolf> {
     }
 
     @Override
-    public void onLeftClick(PlayerInteractEvent event) {
+    public void onLeftClick(final PlayerInteractEvent event) {
         if (event.isCancelled())
             return;
         event.setCancelled(true);
-        Location restoreLoc;
+
+        final Location restoreLoc;
         if (event.getClickedBlock() != null) {
             restoreLoc = event.getClickedBlock().getLocation().add(0, 1, 0);
         } else {
@@ -59,19 +60,28 @@ public class WolfJar extends Jar<Wolf> {
         }
 
         if (canRestoreTo(restoreLoc)) {
-            Wolf wolf = restoreTo(restoreLoc);
-            wolf.setOwner(event.getPlayer());
-            restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
+            tryRestoreTo(restoreLoc, new RestoreHandler<Wolf>() {
+                @Override
+                public void onEntityRestored(Wolf wolf) {
+                    wolf.setOwner(event.getPlayer());
+                    restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
 
-            event.getPlayer().getInventory().removeItem(event.getItem());
+                    event.getPlayer().getInventory().removeItem(event.getItem());
 
-            Jar emptyJar = new EmptyJar(getUniqueId());
-            try {
-                MobJarPlugin.getJars().addJar(emptyJar);
-            } catch (JarException e) {
-                event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Could not open the jar.");
-            }
-            event.getPlayer().getInventory().addItem(emptyJar.getItem());
+                    Jar emptyJar = new EmptyJar(getUniqueId());
+                    try {
+                        MobJarPlugin.getJars().addJar(emptyJar);
+                    } catch (JarException e) {
+                        event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Could not open the jar.");
+                    }
+                    event.getPlayer().getInventory().addItem(emptyJar.getItem());
+                }
+
+                @Override
+                public void onRestoreFailed() {
+                    event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "You can't open the jar here.");
+                }
+            });
         } else {
             event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Not enough space to open the jar.");
         }

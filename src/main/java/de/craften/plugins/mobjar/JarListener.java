@@ -33,7 +33,7 @@ public class JarListener implements Listener {
         if (usedJar != null) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                 usedJar.onLeftClick(event);
-            }else {
+            } else {
                 event.setCancelled(true); //disable any other interaction with jars, i.e. filling empty jars with water
             }
         }
