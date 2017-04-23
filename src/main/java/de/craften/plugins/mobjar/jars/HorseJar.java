@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
@@ -86,38 +85,6 @@ public class HorseJar extends Jar<Horse> {
             });
         } else {
             event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Not enough space to open the jar.");
-        }
-    }
-
-    @Override
-    public void onDrink(PlayerItemConsumeEvent event) {
-        if (event.isCancelled())
-            return;
-        event.setCancelled(true);
-        if (event.getPlayer().getVehicle() == null) {
-            Jar emptyJar = new EmptyJar(getUniqueId());
-            try {
-                MobJarPlugin.getJars().addJar(emptyJar);
-            } catch (JarException e) {
-                event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Could not open the jar.");
-                return;
-            }
-
-            Location restoreLoc = event.getPlayer().getLocation();
-            restoreLoc.getWorld().playEffect(restoreLoc, getRestoreEffect(), 0);
-
-            Horse horse = restoreTo(restoreLoc);
-            if (horse.isAdult()) {
-                horse.setPassenger(event.getPlayer());
-            } else {
-                event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "You can't ride this horse.");
-            }
-            horse.setOwner(event.getPlayer());
-
-            ItemStack emptyJarItem = emptyJar.getItem();
-
-            event.getPlayer().getInventory().removeItem(event.getItem());
-            event.getPlayer().getInventory().addItem(emptyJarItem);
         }
     }
 }

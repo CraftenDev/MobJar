@@ -12,7 +12,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -193,14 +192,5 @@ public abstract class Jar<T extends Creature> {
      * @param event Event as raised by bukkit
      */
     public void onDrop(PlayerDropItemEvent event) {
-    }
-
-    /**
-     * This method is called when a player drinks this jar.
-     *
-     * @param event Event as raised by bukkit
-     */
-    public void onDrink(PlayerItemConsumeEvent event) {
-        event.setCancelled(true);
     }
 }

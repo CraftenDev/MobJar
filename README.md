@@ -11,7 +11,6 @@ There is only one command, `/jar`. This command is used to buy a mob jar. Vault 
 you don't have Vault or don't have an economy plugin, jars will be free.
 
 To catch a mob, right-click it with a jar. To restore a mob from a jar, left-click with that jar.
-You can also drink from jars of mountable mobs (e.g. horses) to restore the mob and mount it.
 
 ## Permissions
 | Permission   | Default | Description |

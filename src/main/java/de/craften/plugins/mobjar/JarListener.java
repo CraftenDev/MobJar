@@ -50,14 +50,6 @@ public class JarListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void stopConsuming(PlayerItemConsumeEvent event) {
-        Jar jar = jarFromItem(event.getItem());
-        if (jar != null) {
-            jar.onDrink(event);
-        }
-    }
-
     public Jar jarFromItem(ItemStack item) {
         try {
             Long id = Jar.getIdFromItemStack(item);
