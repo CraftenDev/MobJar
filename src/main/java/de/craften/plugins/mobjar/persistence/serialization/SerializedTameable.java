@@ -32,6 +32,6 @@ public abstract class SerializedTameable<T extends Creature & Tameable> extends 
         data.set("tamed", creature.isTamed());
 
         if (creature.getOwner() != null)
-            data.set("ownerUUID", creature.getOwner().getUniqueId());
+            data.set("ownerUUID", creature.getOwner().getUniqueId().toString());
     }
 }
