@@ -60,7 +60,7 @@ public class EmptyJar extends Jar {
         if (entity.getPassenger() != null
                 && !player.hasPermission("mobjar.takemounted"))
             return false;
-        if (entity instanceof Tameable && !((Tameable) entity).getOwner().getName().equals(player.getName()) //TODO 1.7.9 must use UUID here
+        if (entity instanceof Tameable && ((Tameable) entity).getOwner() != null && !((Tameable) entity).getOwner().getUniqueId().equals(player.getUniqueId())
                 && !player.hasPermission("mobjar.steal"))
             return false;
 
