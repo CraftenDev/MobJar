@@ -20,7 +20,7 @@ public abstract class SerializedCreature<T extends Creature> {
         data = serializedData;
     }
 
-    public final ConfigurationSection serialize() {
+    public final ConfigurationSection asConfigurationSection() {
         return data;
     }
 

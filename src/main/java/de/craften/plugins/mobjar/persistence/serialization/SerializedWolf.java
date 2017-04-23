@@ -4,7 +4,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Wolf;
 
-public class SerializedWolf extends SerializedCreature<Wolf> {
+public class SerializedWolf extends SerializedTameable<Wolf> {
     public SerializedWolf(Wolf wolf) {
         super(wolf);
     }
@@ -15,6 +15,7 @@ public class SerializedWolf extends SerializedCreature<Wolf> {
 
     @Override
     public void applyOn(Wolf creature) {
+        super.applyOn(creature);
         creature.setCustomName(data.getString("customName"));
         creature.setCustomNameVisible(data.getBoolean("showCustomName"));
         creature.setCollarColor(DyeColor.valueOf(data.getString("collarColor")));
@@ -22,6 +23,7 @@ public class SerializedWolf extends SerializedCreature<Wolf> {
 
     @Override
     protected void serialize(Wolf creature) {
+        super.serialize(creature);
         data.set("customName", creature.getCustomName());
         data.set("showCustomName", creature.isCustomNameVisible());
         data.set("collarColor", creature.getCollarColor().name());

@@ -80,7 +80,7 @@ public class FileJarPersistence implements JarPersistence {
                 throw new JarException("Unknown jar type");
 
             if (jar.getSerialized() != null)
-                fc.set("data", jar.getSerialized().serialize());
+                fc.set("data", jar.getSerialized().asConfigurationSection());
 
             fc.save(jarFile);
         } catch (IOException e) {

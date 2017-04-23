@@ -1,6 +1,5 @@
 package de.craften.plugins.mobjar.persistence.serialization;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * A horse that can be saved as and loaded from a string.
  */
-public class SerializedHorse extends SerializedCreature<Horse> {
+public class SerializedHorse extends SerializedTameable<Horse> {
     public SerializedHorse(Horse horse) {
         super(horse);
     }
@@ -20,6 +19,7 @@ public class SerializedHorse extends SerializedCreature<Horse> {
     @SuppressWarnings("unchecked")
     @Override
     public void applyOn(Horse horse) {
+        super.applyOn(horse);
         horse.setColor(Horse.Color.valueOf(data.getString("color")));
         horse.setStyle(Horse.Style.valueOf(data.getString("style")));
         horse.setAge(data.getInt("age"));
@@ -29,9 +29,6 @@ public class SerializedHorse extends SerializedCreature<Horse> {
         horse.setVariant(Horse.Variant.valueOf(data.getString("variant")));
         horse.setCustomName(data.getString("customName"));
         horse.setCustomNameVisible(data.getBoolean("customNameVisible"));
-
-        if (data.contains("owner"))
-            horse.setOwner(Bukkit.getOfflinePlayer(data.getString("owner")));
 
         if (data.contains("chest")) {
             horse.setCarryingChest(true);
@@ -50,6 +47,7 @@ public class SerializedHorse extends SerializedCreature<Horse> {
 
     @Override
     protected void serialize(Horse horse) {
+        super.serialize(horse);
         data.set("color", horse.getColor().name());
         data.set("style", horse.getStyle().name());
         data.set("age", horse.getAge());
@@ -59,9 +57,6 @@ public class SerializedHorse extends SerializedCreature<Horse> {
         data.set("variant", horse.getVariant().name());
         data.set("customName", horse.getCustomName());
         data.set("customNameVisible", horse.isCustomNameVisible());
-
-        if (horse.isTamed())
-            data.set("owner", horse.getOwner().getName());
 
         if (horse.getInventory().getArmor() != null) {
             data.createSection("armor", horse.getInventory().getArmor().serialize());
