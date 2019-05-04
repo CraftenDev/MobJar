@@ -71,10 +71,10 @@ public class WolfJar extends Jar<Wolf> {
                     Jar emptyJar = new EmptyJar(getUniqueId());
                     try {
                         MobJarPlugin.getJars().addJar(emptyJar);
+                        event.getPlayer().getInventory().addItem(emptyJar.getItem());
                     } catch (JarException e) {
-                        event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Could not open the jar.");
+                        event.getPlayer().sendMessage(MobJarPlugin.PREFIX + "Could create a new empty jar.");
                     }
-                    event.getPlayer().getInventory().addItem(emptyJar.getItem());
                 }
 
                 @Override
