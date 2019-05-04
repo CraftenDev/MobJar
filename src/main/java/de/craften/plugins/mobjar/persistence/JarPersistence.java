@@ -13,7 +13,7 @@ public interface JarPersistence {
      * @return True if a jar with the given ID exists, false if not
      * @throws JarException If checking if the jar exists fails
      */
-    public boolean hasJar(long id) throws JarException;
+    boolean hasJar(long id) throws JarException;
 
     /**
      * Loads the jar with the given ID.
@@ -22,7 +22,7 @@ public interface JarPersistence {
      * @return The jar with the given ID, if it exists. Null if that jar doesn't exist.
      * @throws JarException If loading the jar fails
      */
-    public Jar getJar(long id) throws JarException;
+    Jar getJar(long id) throws JarException;
 
     /**
      * Saves the given jar. A jar with the same ID is overwritten.
@@ -30,7 +30,7 @@ public interface JarPersistence {
      * @param jar The jar to save
      * @throws JarException If saving the jar fails
      */
-    public void addJar(Jar jar) throws JarException;
+    void addJar(Jar jar) throws JarException;
 
     /**
      * Removes the given jar from the storage. If that jar is not saved, this is a no-op.
@@ -38,5 +38,27 @@ public interface JarPersistence {
      * @param id ID of the jar to remove
      * @throws JarException If removing the jar fails
      */
-    public void removeJar(long id) throws JarException;
+    void removeJar(long id) throws JarException;
+
+    /**
+     * Lock the given jar temporarily. The lock will be removed when the server is restarted.
+     *
+     * @param id ID of the jar to lock
+     */
+    void temporarilyLockJar(long id);
+
+    /**
+     * Unlock the given jar.
+     *
+     * @param id ID of the jar to unlock
+     */
+    void unlockJar(long id);
+
+    /**
+     * Check if the given jar is temporarily locked.
+     *
+     * @param id ID of a jar
+     * @return True if the jar is temporarily locked, false otherwise
+     */
+    boolean isLocked(long id);
 }

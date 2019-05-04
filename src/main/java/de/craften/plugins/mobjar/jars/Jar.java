@@ -104,6 +104,7 @@ public abstract class Jar<T extends Creature> {
      * @param restoreHandler handler for restore callbacks
      */
     protected final void tryRestoreTo(final Location location, final RestoreHandler<T> restoreHandler) {
+        MobJarPlugin.getJars().temporarilyLockJar(getUniqueId());
         final T entity = restoreTo(location);
         // Another plugin may cancel the CreatureSpawnEvent so that the jar content is not actually restored!
         // We check that in the next tick.
@@ -117,6 +118,7 @@ public abstract class Jar<T extends Creature> {
                 } else {
                     restoreHandler.onRestoreFailed();
                 }
+                MobJarPlugin.getJars().unlockJar(getUniqueId());
             }
         });
     }

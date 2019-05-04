@@ -8,7 +8,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class JarListener implements Listener {
@@ -53,8 +52,10 @@ public class JarListener implements Listener {
     public Jar jarFromItem(ItemStack item) {
         try {
             Long id = Jar.getIdFromItemStack(item);
-            if (id == null)
+            if (id == null || MobJarPlugin.getJars().isLocked(id)) {
+                // don't return locked jars to fix duplication glitches due to fast clicking
                 return null;
+            }
             return MobJarPlugin.getJars().getJar(id);
         } catch (JarException e) {
             e.printStackTrace();

@@ -13,7 +13,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manages jars using files.
@@ -21,6 +23,7 @@ import java.util.Map;
 public class FileJarPersistence implements JarPersistence {
     private final File directory;
     private Map<Long, Jar> jarSave = new HashMap<Long, Jar>();
+    private Set<Long> temporarilyLockedJars = new HashSet<Long>();
 
     public FileJarPersistence(File saveDirectory) {
         directory = saveDirectory;
@@ -28,13 +31,17 @@ public class FileJarPersistence implements JarPersistence {
 
     @Override
     public boolean hasJar(long id) {
+        if (temporarilyLockedJars.contains(id)) {
+            return false;
+        }
         return new File(directory, Long.toString(id)).exists();
     }
 
     @Override
     public Jar getJar(long id) throws JarException {
-        if (jarSave.containsKey(id))
+        if (jarSave.containsKey(id)) {
             return jarSave.get(id);
+        }
 
         File jarFile = new File(directory, Long.toString(id));
         if (jarFile.exists()) {
@@ -100,5 +107,20 @@ public class FileJarPersistence implements JarPersistence {
                 throw new JarException("Could not delete jar");
             }
         }
+    }
+
+    @Override
+    public void temporarilyLockJar(long id) {
+        temporarilyLockedJars.add(id);
+    }
+
+    @Override
+    public void unlockJar(long id) {
+        temporarilyLockedJars.remove(id);
+    }
+
+    @Override
+    public boolean isLocked(long id) {
+        return temporarilyLockedJars.contains(id);
     }
 }
